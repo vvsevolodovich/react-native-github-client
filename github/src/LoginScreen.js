@@ -12,9 +12,8 @@ export default class LoginScreen extends Component {
     onLogin() {
         this.setState({ error : null });
         let base64 = this.encode(`${this.state.login}:${this.state.password}`);
-        console.log('fetch: login ' + this.state.login);
-        console.log('fetch: base64 ' + base64);
-        fetch('https://api.github.com/user/repos', {
+        console.log('base64 = ' + base64);
+        fetch('https://api.github.com/user', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -25,7 +24,8 @@ export default class LoginScreen extends Component {
             .then(result => {
                 console.log('fetch: ' + JSON.stringify(result));
                 if (result.status === 200) {
-                    console.log('fetch: success!')
+                    console.log('fetch: success, name = ' + result.name)
+                    this.props.onLogin(JSON.parse(result._bodyInit), base64);
                 } else {
                     this.setState({ error: `Failed to login with ${result.status}` })
                 }
