@@ -29,7 +29,6 @@ const styles = {
         fontSize: 12,
         alignSelf: 'flex-end',
         flexGrow: 1,
-        //backgroundColor: 'red',
         textAlign: 'right'
     }
 };

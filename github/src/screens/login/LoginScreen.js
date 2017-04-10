@@ -3,16 +3,19 @@ import {Button, Text, Image, TextInput, View} from "react-native";
 
 import { Buffer } from 'buffer';
 
-export default class LoginScreen extends Component {
+import { connect } from 'react-redux';
+import { loginStart, loginEnd, loginError } from '../../actions/LoginActions';
+
+class LoginScreen extends Component {
 
     encode(value) {
         return new Buffer(value).toString('base64');
     }
 
     onLogin() {
-        this.setState({ error : null });
+        this.props.loginStart();
+        const self = this;
         let base64 = this.encode(`${this.state.login}:${this.state.password}`);
-        console.log('base64 = ' + base64);
         fetch('https://api.github.com/user', {
             method: 'GET',
             headers: {
@@ -24,15 +27,14 @@ export default class LoginScreen extends Component {
             .then(result => {
                 console.log('fetch: ' + JSON.stringify(result));
                 if (result.status === 200) {
-                    console.log('fetch: success, name = ' + result.name)
-                    this.props.onLogin(JSON.parse(result._bodyInit), base64);
+                    console.log('fetch: success, name = ' + result.name);
+                    self.props.loginEnd({ user: JSON.parse(result._bodyInit), auth: base64 });
                 } else {
-                    this.setState({ error: `Failed to login with ${result.status}` })
+                    self.props.loginError(`Failed to login with ${result.status}`);
                 }
             })
             .catch(error => {
-                console.log('error: ' + JSON.stringify(error));
-                this.setState({ error: `Failed to login with ${error}` })
+                self.props.loginError(`Failed to login with ${error}`);
             })
             .done();
 
@@ -40,7 +42,7 @@ export default class LoginScreen extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {login: '', password: '', error: null}
+        this.state = {login: '', password: ''}
     }
 
     renderInputs() {
@@ -67,9 +69,9 @@ export default class LoginScreen extends Component {
     }
 
     renderError() {
-        return (this.state.error &&
+        return (this.props.error &&
             <Text style={{fontSize: 14, color: 'red', margin: 16}}>
-                {this.state.error}
+                {this.props.error}
             </Text>);
     }
 
@@ -80,7 +82,7 @@ export default class LoginScreen extends Component {
             <View style={container}>
                 <View style={{alignItems: 'center'}}>
                     <Image
-                        source={require('./GitHub-Logo.png')}
+                        source={require('./../../GitHub-Logo.png')}
                     />
                 </View>
                 {this.renderInputs()}
@@ -105,3 +107,9 @@ const styles = {
         color: 'black'
     }
 };
+
+const mapStateToProps = (state) => {
+    return { error: state.login.error };
+};
+
+export default connect(mapStateToProps, { loginStart, loginEnd, loginError })(LoginScreen);
