@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
+import ReduxThunk from 'redux-thunk';
 
 import Provider from "react-redux/src/components/Provider";
 
@@ -15,7 +16,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <Provider store={createStore(reducers)}>
+            <Provider store={createStore(reducers, {}, applyMiddleware(ReduxThunk))}>
                 <Root />
             </Provider>);
     }

@@ -1,43 +1,13 @@
 import React, {Component} from 'react';
 import {Button, Text, Image, TextInput, View} from "react-native";
 
-import { Buffer } from 'buffer';
-
 import { connect } from 'react-redux';
 import { loginStart, loginEnd, loginError } from '../../actions/LoginActions';
 
 class LoginScreen extends Component {
 
-    encode(value) {
-        return new Buffer(value).toString('base64');
-    }
-
     onLogin() {
-        this.props.loginStart();
-        const self = this;
-        let base64 = this.encode(`${this.state.login}:${this.state.password}`);
-        fetch('https://api.github.com/user', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + base64
-            },
-        })
-            .then(result => {
-                console.log('fetch: ' + JSON.stringify(result));
-                if (result.status === 200) {
-                    console.log('fetch: success, name = ' + result.name);
-                    self.props.loginEnd({ user: JSON.parse(result._bodyInit), auth: base64 });
-                } else {
-                    self.props.loginError(`Failed to login with ${result.status}`);
-                }
-            })
-            .catch(error => {
-                self.props.loginError(`Failed to login with ${error}`);
-            })
-            .done();
-
+        this.props.loginStart(this.state.login, this.state.password);
     };
 
     constructor(props) {
