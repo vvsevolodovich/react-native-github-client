@@ -3,6 +3,8 @@ import {Button, Text, Image, TextInput, View} from "react-native";
 
 import { connect } from 'react-redux';
 import { loginStart, loginEnd, loginError } from '../../actions/LoginActions';
+import {FormInput} from "../../validation/FormInput";
+import Form from "../../validation/Form";
 
 class LoginScreen extends Component {
 
@@ -15,19 +17,25 @@ class LoginScreen extends Component {
         this.state = {login: '', password: ''}
     }
 
+    form = null;
+
     renderInputs() {
         const {textInput} = styles;
 
         return (
             <View>
-                <TextInput
+                <FormInput
+                    required
                     style={textInput}
+                    name="Login"
                     placeholder='login'
                     onChangeText={(value) => {
                         this.setState({login: value});
                     }}
                 />
-                <TextInput
+                <FormInput
+                    required
+                    name="Password"
                     style={textInput}
                     secureTextEntry
                     placeholder='password'
@@ -55,9 +63,15 @@ class LoginScreen extends Component {
                         source={require('./../../GitHub-Logo.png')}
                     />
                 </View>
-                {this.renderInputs()}
+                <Form ref={(id) => { this.form = id; }}>
+                    {this.renderInputs()}
+                </Form>
                 {this.renderError()}
-                <Button title='Login' onPress={this.onLogin.bind(this)}/>
+                <Button title='Login' onPress={() => {
+                    if (this.form.validate()) {
+                        this.onLogin();
+                    }
+                }}/>
             </View>
         )
     }
@@ -73,8 +87,6 @@ const styles = {
     },
     textInput: {
         margin: 16,
-        fontSize: 18,
-        color: 'black'
     }
 };
 
