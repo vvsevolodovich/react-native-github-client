@@ -11,8 +11,12 @@ export default class Form extends Component {
         validateState: PropTypes.func.isRequired
     };
 
-    constructor(props) {
-        super(props);
+    static contextTypes = {
+        i18n: PropTypes.func
+    };
+
+    constructor(props, context) {
+        super(props, context);
 
         this.components = {};
         this.state = {
@@ -35,7 +39,7 @@ export default class Form extends Component {
             const component = this.components[name];
 
             if (component.props.required && !component.state.value) {
-                errors[name] = `${name} is required`;
+                errors[name] = `${this.context.i18n(name)} ${this.context.i18n('required')}`;
             }
 
             return errors;

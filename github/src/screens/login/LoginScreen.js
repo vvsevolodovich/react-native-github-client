@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { loginStart, loginEnd, loginError } from '../../actions/LoginActions';
 import {FormInput} from "../../validation/FormInput";
 import Form from "../../validation/Form";
+import Localization from "../../localization/Localization";
 
 class LoginScreen extends Component {
 
@@ -18,6 +19,7 @@ class LoginScreen extends Component {
     }
 
     form = null;
+    lang = 'en';
 
     renderInputs() {
         const {textInput} = styles;
@@ -27,7 +29,7 @@ class LoginScreen extends Component {
                 <FormInput
                     required
                     style={textInput}
-                    name="Login"
+                    name="login"
                     placeholder='login'
                     onChangeText={(value) => {
                         this.setState({login: value});
@@ -35,7 +37,7 @@ class LoginScreen extends Component {
                 />
                 <FormInput
                     required
-                    name="Password"
+                    name="password"
                     style={textInput}
                     secureTextEntry
                     placeholder='password'
@@ -58,20 +60,22 @@ class LoginScreen extends Component {
 
         return (
             <View style={container}>
-                <View style={{alignItems: 'center'}}>
-                    <Image
-                        source={require('./../../GitHub-Logo.png')}
-                    />
-                </View>
-                <Form ref={(id) => { this.form = id; }}>
-                    {this.renderInputs()}
-                </Form>
-                {this.renderError()}
-                <Button title='Login' onPress={() => {
-                    if (this.form.validate()) {
-                        this.onLogin();
-                    }
-                }}/>
+                <Localization lang={this.lang}>
+                    <View style={{alignItems: 'center'}}>
+                        <Image
+                            source={require('./../../GitHub-Logo.png')}
+                        />
+                    </View>
+                    <Form ref={(id) => { this.form = id; }}>
+                        {this.renderInputs()}
+                    </Form>
+                    {this.renderError()}
+                    <Button title='Login' onPress={() => {
+                        if (this.form.validate()) {
+                            this.onLogin();
+                        }
+                    }}/>
+                </Localization>
             </View>
         )
     }

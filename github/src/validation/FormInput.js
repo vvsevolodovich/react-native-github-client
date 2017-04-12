@@ -8,7 +8,8 @@ class FormInput extends Component {
         register: PropTypes.func,
         unregister: PropTypes.func,
         errors: PropTypes.objectOf(PropTypes.string),
-        validateState: PropTypes.func
+        validateState: PropTypes.func,
+        i18n: PropTypes.func
     };
 
     constructor(props, context) {
@@ -48,7 +49,7 @@ class FormInput extends Component {
                 <TextInput
                     secureTextEntry={this.props.secureTextEntry}
                     textInputStyle={applyTextInputStyle}
-                    placeholder={this.props.placeholder}
+                    placeholder={this.context.i18n(this.props.placeholder)}
                     value={this.state.value || this.props.defaultValue}
                     keyboardType={this.props.keyboardType}
                     onChangeText={(newValue) => {
